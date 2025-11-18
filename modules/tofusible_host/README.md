@@ -5,7 +5,7 @@ It is used in conjunction with the `spacelift` dynamic inventory plugin to pass 
 
 This module ensures the hosts are formatted in a predictable way.
 This is important because different resources across the OpenTofu community can create hosts in different ways, so this module ensures that the hosts are formatted in a way that the `spacelift` dynamic inventory plugin can read them.
-As an example, an `aws_ec2_instance`'s `public_ip` is **not** the same as a `digitalocean_droplet`'s `ipv4_address` attribute.
+As an example, an `azurerm_public_ip`'s `ip_address` attribute is **not** the same as a `digitalocean_droplet`'s `ipv4_address` attribute or an `aws_ec2_instance`'s `public_ip`.
 
 ## Variables
 
@@ -20,7 +20,7 @@ Say you create a host with the following information:
 module "tofusible_host_1" {
   source  = "spacelift.io/spacelift-solutions/tofusible-host/spacelift"
 
-  host   = aws_ec2_instance.example.public_ip
+  host   = azurerm_public_ip.example.ip_address
   groups = ["web", "production", "servers.linux"]
 }
 ```
@@ -39,7 +39,7 @@ Say you create a host with the following information:
 module "tofusible_host_1" {
   source  = "spacelift.io/spacelift-solutions/tofusible-host/spacelift"
 
-  host       = aws_ec2_instance.example.public_ip
+  host       = azurerm_public_ip.example.ip_address
   extra_vars = {
     subatomic = "particles"
     spacelift = "awesome"

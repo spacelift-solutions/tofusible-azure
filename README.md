@@ -1,8 +1,10 @@
-# Tofusible
+# Tofusible (Azure Implementation)
 
 Tofusible is a simple and easy-to-use OpenTofu module and Ansible dynamic inventory (\[Open]**Tofu**\[An]**sible**) made specifically for using OpenTofu with Ansible in Spacelift.
 
 It allows you to create virtual machines in OpenTofu (or Terraform) with any provider you wish and passes that information to Ansible for further configuration.
+
+**This repository contains the Azure implementation** using `azurerm` provider. The architecture is cloud-agnostic and can be adapted for other providers (AWS, GCP, DigitalOcean, etc.).
 
 
 ## How It Works
@@ -15,7 +17,7 @@ Feel free to dig around in this repository to see how it works and how you can u
 
 From a high level, the process is as follows:
 1. You create virtual machines with OpenTofu - using the provider natively
-   - The examples included in this repository use `aws_ec2_instance`'s as examples, but you are not limited to this provider.
+   - The examples included in this repository use Azure (`azurerm_linux_virtual_machine`) as examples, but you are not limited to this provider.
 2. You use the `tofusible_host` module to gather information about the virtual machines you created.
 3. You output the `tofusible_host`s as a list of hosts in OpenTofu (using native OpenTofu outputs).
 4. You use the [Spacelift stack dependency](https://docs.spacelift.io/concepts/stack/stack-dependencies#stack-dependencies) feature to pass the output to an Ansible stack.

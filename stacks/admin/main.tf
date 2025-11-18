@@ -1,7 +1,8 @@
 terraform {
   required_providers {
-    aws = {
-      source = "hashicorp/aws"
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
     }
     spacelift = {
       source = "spacelift-io/spacelift"
@@ -9,8 +10,8 @@ terraform {
   }
 }
 
-provider "aws" {
-  # Dont forget to set `AWS_DEFAULT_REGION` in your stack.
+provider "azurerm" {
+  features {}
 }
 
 provider "spacelift" {}
@@ -64,16 +65,16 @@ locals {
 module "stack_opentofu" {
   source = "spacelift.io/spacelift-solutions/stacks-module/spacelift"
 
-  description     = "Stack that creates EC2 Servers"
-  name            = "Tofusible - OpenTofu"
+  description     = "Stack that creates Azure VMs"
+  name            = "Tofusible - Azure - OpenTofu"
   repository_name = "tofusible"
   space_id        = var.resource_space_id
 
   auto_deploy = true
 
-  aws_integration = {
+  azure_devops = {
     enabled = true
-    id      = var.aws_integration_id
+    id      = var.azure_integration_id
   }
 
   environment_variables = {
@@ -83,27 +84,27 @@ module "stack_opentofu" {
       sensitive = false
     }
 
-    # We pass this to the OpenTofu stack so it can be used in the aws ec2 instances
-    TF_VAR_aws_private_key_name = {
-      value     = aws_key_pair.this.key_name
+    # We pass the public key to the OpenTofu stack for Azure VM SSH authentication
+    TF_VAR_ssh_public_key = {
+      value     = tls_private_key.this.public_key_openssh
       sensitive = false
     }
 
-    # This is the subnet where the instances will be created
+    # This is the Azure resource group where resources will be created
+    TF_VAR_resource_group_name = {
+      value     = var.resource_group_name
+      sensitive = false
+    }
+
+    # This is the subnet where the VMs will be created
     TF_VAR_subnet_id = {
       value     = var.subnet_id
       sensitive = false
     }
 
-    # This is the security group that will be attached to the instances
-    # NOTE: This security group should allow SSH access from the ansible stack !IMPORTANT
-    TF_VAR_vpc_security_group_id = {
-      value     = var.vpc_security_group_id
-      sensitive = false
-    }
-
-    AWS_DEFAULT_REGION = {
-      value     = var.aws_default_region
+    # Azure region/location for resources
+    TF_VAR_location = {
+      value     = var.azure_location
       sensitive = false
     }
   }
@@ -114,7 +115,7 @@ module "stack_opentofu" {
     tofusible_ssh_key = spacelift_context.ssh_keys.id
   }
 
-  labels            = ["tofusible", "opentofu", "infracost"]
+  labels            = ["tofusible", "azure", "opentofu", "infracost"]
   project_root      = "stacks/tofu"
   repository_branch = "main"
 }
@@ -122,8 +123,8 @@ module "stack_opentofu" {
 module "stack_ansible" {
   source = "spacelift.io/spacelift-solutions/stacks-module/spacelift"
 
-  description     = "Stack that configures EC2 servers"
-  name            = "Tofusible - Ansible"
+  description     = "Stack that configures Azure VMs"
+  name            = "Tofusible - Azure - Ansible"
   repository_name = "tofusible"
   space_id        = var.resource_space_id
 
@@ -143,7 +144,7 @@ module "stack_ansible" {
     tofusible_ssh_key = spacelift_context.ssh_keys.id
   }
 
-  labels            = ["tofusible", "ansible"]
+  labels            = ["tofusible", "azure", "ansible"]
   project_root      = "stacks/ansible"
   repository_branch = "main"
 
@@ -168,13 +169,13 @@ module "stack_additional" {
   count = var.create_additional_dependency_for_demos ? 1 : 0
 
   description     = "Stack that creates null resources"
-  name            = "Tofusible - Additional"
+  name            = "Tofusible - Azure - Additional"
   repository_name = "tofusible"
   space_id        = var.resource_space_id
 
   auto_deploy = true
 
-  labels            = ["tofusible", "additional", "infracost"]
+  labels            = ["tofusible", "azure", "additional", "infracost"]
   project_root      = "stacks/tofu/additional"
   repository_branch = "main"
 }

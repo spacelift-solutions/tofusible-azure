@@ -3,17 +3,12 @@ resource "tls_private_key" "this" {
   rsa_bits  = 4096
 }
 
-resource "aws_key_pair" "this" {
-  key_name   = "ssh_example_tofu_ansible"
-  public_key = tls_private_key.this.public_key_openssh
-}
-
 resource "spacelift_context" "ssh_keys" {
-  name = "tofusible-ssh-key"
+  name = "tofusible-azure-ssh-key"
 
   space_id = var.resource_space_id
 
-  labels = ["tofusible"]
+  labels = ["tofusible", "azure"]
 }
 
 resource "spacelift_mounted_file" "ssh_private_key" {

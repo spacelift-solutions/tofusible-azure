@@ -1,7 +1,7 @@
-variable "aws_integration_id" {
+variable "azure_integration_id" {
   type        = string
-  description = "The AWS Integration to use for child stacks."
-  default     = "01JAZPBRW3K2YB0K7F58NZSDY6"
+  description = "The Azure Integration to use for child stacks."
+  default     = "01JAZPBRW3K2YB0K7F58NZSDY6" # Update this with your Azure integration ID
 }
 
 variable "resource_space_id" {
@@ -16,22 +16,22 @@ variable "ansible_worker_pool_id" {
   default     = "01JCZY4WD38EJS5S94B64E0V1Z"
 }
 
+variable "resource_group_name" {
+  type        = string
+  description = "The Azure resource group name where resources will be created."
+  default     = "tofusible-rg" # Update this with your Azure resource group
+}
+
 variable "subnet_id" {
   type        = string
-  description = "The subnet to launch instance in in the OpenTofu stack."
-  default     = "subnet-03bf64b24af404d2a"
+  description = "The subnet ID to launch VMs in within the OpenTofu stack."
+  default     = "/subscriptions/YOUR_SUBSCRIPTION_ID/resourceGroups/YOUR_RG/providers/Microsoft.Network/virtualNetworks/YOUR_VNET/subnets/YOUR_SUBNET"
 }
 
-variable "vpc_security_group_id" {
+variable "azure_location" {
   type        = string
-  description = "The security group attached to instance in the OpenTofu stack."
-  default     = "sg-01cb7dc1977bf9603"
-}
-
-variable "aws_default_region" {
-  type        = string
-  description = "The default region to use for the AWS provider."
-  default     = "us-east-1"
+  description = "The Azure region/location where resources will be created."
+  default     = "eastus"
 }
 
 variable "create_additional_dependency_for_demos" {
