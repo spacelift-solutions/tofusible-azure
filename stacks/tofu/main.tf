@@ -38,7 +38,33 @@ provider "azurerm" {
 }
 
 locals {
-    ssh_public_key = file(var.public_key_path)
+  ssh_public_key = file(var.public_key_path)
+}
+
+###############################
+## Network Security Group
+###############################
+
+resource "azurerm_network_security_group" "tofusible" {
+  name                = "tofusible-nsg"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  security_rule {
+    name                       = "AllowSSH"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  tags = {
+    Name = "tofusible-nsg"
+  }
 }
 
 ###############################
@@ -247,6 +273,25 @@ resource "azurerm_linux_virtual_machine" "tofu_dev" {
     Name        = "tofu dev"
     Environment = "dev"
   }
+}
+
+###############################
+## Associate NSG with NICs
+###############################
+
+resource "azurerm_network_interface_security_group_association" "tofu_production" {
+  network_interface_id      = azurerm_network_interface.tofu_production.id
+  network_security_group_id = azurerm_network_security_group.tofusible.id
+}
+
+resource "azurerm_network_interface_security_group_association" "tofu_qa" {
+  network_interface_id      = azurerm_network_interface.tofu_qa.id
+  network_security_group_id = azurerm_network_security_group.tofusible.id
+}
+
+resource "azurerm_network_interface_security_group_association" "tofu_dev" {
+  network_interface_id      = azurerm_network_interface.tofu_dev.id
+  network_security_group_id = azurerm_network_security_group.tofusible.id
 }
 
 ##############################################################
