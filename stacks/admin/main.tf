@@ -67,7 +67,7 @@ module "stack_opentofu" {
 
   description     = "Stack that creates Azure VMs"
   name            = "Tofusible - Azure - OpenTofu"
-  repository_name = "tofusible"
+  repository_name = "tofusible-azure"
   space_id        = var.resource_space_id
 
   auto_deploy = true
@@ -114,7 +114,7 @@ module "stack_ansible" {
 
   description     = "Stack that configures Azure VMs"
   name            = "Tofusible - Azure - Ansible"
-  repository_name = "tofusible"
+  repository_name = "tofusible-azure"
   space_id        = var.resource_space_id
 
   auto_deploy = true
@@ -159,7 +159,7 @@ module "stack_additional" {
 
   description     = "Stack that creates null resources"
   name            = "Tofusible - Azure - Additional"
-  repository_name = "tofusible"
+  repository_name = "tofusible-azure"
   space_id        = var.resource_space_id
 
   auto_deploy = true
