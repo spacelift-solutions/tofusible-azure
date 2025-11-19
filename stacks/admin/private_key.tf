@@ -32,7 +32,7 @@ resource "spacelift_environment_variable" "ssh_private_key_path" {
 resource "spacelift_mounted_file" "ssh_public_key" {
   context_id = spacelift_context.ssh_keys.id
 
-  content = base64encode(tls_private_key.this.public_key_pem)
+  content = base64encode(tls_private_key.this.public_key_openssh)
   relative_path = "spacelift.pub"
 }
 
