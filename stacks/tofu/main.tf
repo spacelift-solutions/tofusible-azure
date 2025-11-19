@@ -7,9 +7,14 @@ terraform {
   }
 }
 
+variable "public_key_path" {
+  type        = string
+  description = "The path to the public key to use for SSH"
+}
+
 variable "private_key_path" {
   type        = string
-  description = "The path to the SSH key to use for VM authentication"
+  description = "The path to the private key to use for SSH"
 }
 
 variable "resource_group_name" {
@@ -33,7 +38,7 @@ provider "azurerm" {
 }
 
 locals {
-    ssh_public_key = file(var.private_key_path)
+    ssh_public_key = file(var.public_key_path)
 }
 
 ###############################
