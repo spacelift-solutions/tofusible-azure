@@ -41,6 +41,6 @@ variable "create_additional_dependency_for_demos" {
 }
 
 variable "azure_subscription_id" {
-    type        = string
-    description = "The Azure subscription ID where resources will be created."
+  type        = string
+  description = "The Azure subscription ID where resources will be created."
 }

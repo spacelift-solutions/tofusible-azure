@@ -73,24 +73,12 @@ module "stack_opentofu" {
   auto_deploy = true
 
   azure_integration = {
-    enabled = true
-    id      = var.azure_integration_id
+    enabled         = true
+    id              = var.azure_integration_id
     subscription_id = var.azure_subscription_id
   }
 
   environment_variables = {
-    # We pass this to the OpenTofu stack so it can be used in the inventory
-    TF_VAR_private_key_path = {
-      value     = local.private_key_full_path
-      sensitive = false
-    }
-
-    # We pass the public key to the OpenTofu stack for Azure VM SSH authentication
-    TF_VAR_ssh_public_key = {
-      value     = tls_private_key.this.public_key_openssh
-      sensitive = false
-    }
-
     # This is the Azure resource group where resources will be created
     TF_VAR_resource_group_name = {
       value     = var.resource_group_name
