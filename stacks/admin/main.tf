@@ -72,9 +72,10 @@ module "stack_opentofu" {
 
   auto_deploy = true
 
-  azure_devops = {
+  azure_integration = {
     enabled = true
     id      = var.azure_integration_id
+    subscription_id = var.azure_subscription_id
   }
 
   environment_variables = {

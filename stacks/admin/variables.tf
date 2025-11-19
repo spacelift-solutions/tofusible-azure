@@ -39,3 +39,8 @@ variable "create_additional_dependency_for_demos" {
   description = "Whether to create an additional dependency resource for demo purposes."
   default     = false
 }
+
+variable "azure_subscription_id" {
+    type        = string
+    description = "The Azure subscription ID where resources will be created."
+}
