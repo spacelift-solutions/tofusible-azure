@@ -7,14 +7,9 @@ terraform {
   }
 }
 
-variable "ssh_public_key" {
-  type        = string
-  description = "The public SSH key to use for VM authentication"
-}
-
 variable "private_key_path" {
   type        = string
-  description = "The path to the private key to use for SSH"
+  description = "The path to the SSH key to use for VM authentication"
 }
 
 variable "resource_group_name" {
@@ -35,6 +30,10 @@ variable "location" {
 
 provider "azurerm" {
   features {}
+}
+
+locals {
+    ssh_public_key = file(var.private_key_path)
 }
 
 ###############################
@@ -88,7 +87,7 @@ resource "azurerm_linux_virtual_machine" "tofu_production" {
 
   admin_ssh_key {
     username   = "ubuntu"
-    public_key = var.ssh_public_key
+    public_key = local.ssh_public_key
   }
 
   os_disk {
@@ -156,7 +155,7 @@ resource "azurerm_linux_virtual_machine" "tofu_qa" {
 
   admin_ssh_key {
     username   = "ubuntu"
-    public_key = var.ssh_public_key
+    public_key = local.ssh_public_key
   }
 
   os_disk {
@@ -224,7 +223,7 @@ resource "azurerm_linux_virtual_machine" "tofu_dev" {
 
   admin_ssh_key {
     username   = "ubuntu"
-    public_key = var.ssh_public_key
+    public_key = local.ssh_public_key
   }
 
   os_disk {
